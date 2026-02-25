@@ -1,29 +1,17 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
-
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 dotenv.config();
+const connectDB = require("./config/database");
 
 const app = express();
-
+//! Establish connection to mongodb
+connectDB();
 // Middleware
-app.use(cors());
 app.use(express.json());
-
-// Test Route
-app.get("/", (req, res) => {
-  res.send("HRMS Lite Backend Running 🚀");
-});
-
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log(err));
-
-const PORT = process.env.PORT || 5000;
-
+app.use("/api/employees", employeeRoutes);
+app.use("/api/attendance", attendanceRoutes);
+const PORT = process.env.PORT || 9080;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
