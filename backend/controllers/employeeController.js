@@ -1,10 +1,11 @@
 const Employee = require("../models/Employee");
+const Attendance = require("../models/Attendance");
 // Add Employee
 exports.createEmployee = async (req, res) => {
   try {
-    const { employeeId, fullName, email, department } = req.body;
+    const { employeeId, fullName, email, department, phoneNumber } = req.body;
 
-    if (!employeeId || !fullName || !email || !department) {
+    if (!employeeId || !fullName || !email || !department || !phoneNumber) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -21,6 +22,7 @@ exports.createEmployee = async (req, res) => {
       fullName,
       email,
       department,
+      phoneNumber,
     });
 
     res.status(201).json(employee);
@@ -48,9 +50,15 @@ exports.deleteEmployee = async (req, res) => {
       return res.status(404).json({ message: "Employee not found" });
     }
 
+    //  Delete related attendance records
+    await Attendance.deleteMany({ employee: employee._id });
+
     await employee.deleteOne();
-    res.status(200).json({ message: "Employee deleted successfully" });
+
+    res.status(200).json({
+      message: "Employee and related attendance deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 };

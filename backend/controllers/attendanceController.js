@@ -16,32 +16,17 @@ exports.markAttendance = async (req, res) => {
       return res.status(404).json({ message: "Employee not found" });
     }
 
-    // Normalize date (important)
     const attendanceDate = new Date(date);
     attendanceDate.setHours(0, 0, 0, 0);
 
-    // Check if already exists
-    const existing = await Attendance.findOne({
-      employee: employee._id,
-      date: attendanceDate,
-    });
+    // 🔥 Upsert (No duplicate issue)
+    const attendance = await Attendance.findOneAndUpdate(
+      { employee: employee._id, date: attendanceDate },
+      { status },
+      { new: true, upsert: true },
+    );
 
-    if (existing) {
-      // Update instead of create
-      existing.status = status;
-      await existing.save();
-
-      return res.status(200).json(existing);
-    }
-
-    // Create new record
-    const attendance = await Attendance.create({
-      employee: employee._id,
-      date: attendanceDate,
-      status,
-    });
-
-    res.status(201).json(attendance);
+    res.status(200).json(attendance);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
@@ -49,6 +34,8 @@ exports.markAttendance = async (req, res) => {
 
 exports.getAttendanceByEmployee = async (req, res) => {
   try {
+    const { month } = req.query;
+
     const employee = await Employee.findOne({
       employeeId: req.params.employeeId,
     });
@@ -57,18 +44,31 @@ exports.getAttendanceByEmployee = async (req, res) => {
       return res.status(404).json({ message: "Employee not found" });
     }
 
+    if (!month) {
+      return res.status(400).json({ message: "Month is required" });
+    }
+
+    const [year, monthNumber] = month.split("-");
+
+    const startDate = new Date(year, monthNumber - 1, 1);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(year, monthNumber, 0);
+    endDate.setHours(23, 59, 59, 999);
+
     const records = await Attendance.find({
       employee: employee._id,
+      date: { $gte: startDate, $lte: endDate },
     })
-      .sort({ date: -1 }) // latest first
-      .populate("employee", "fullName employeeId department");
+      .populate("employee", "fullName employeeId email department phoneNumber")
+      .sort({ date: 1 })
+      .lean();
 
     res.status(200).json(records);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
 exports.getEmployeesWithTodayStatus = async (req, res) => {
   try {
     const today = new Date();
@@ -89,6 +89,8 @@ exports.getEmployeesWithTodayStatus = async (req, res) => {
       fullName: emp.fullName,
       email: emp.email,
       department: emp.department,
+      phoneNumber: emp.phoneNumber,
+
       status: attendanceMap[emp._id.toString()] || "Pending",
     }));
 
