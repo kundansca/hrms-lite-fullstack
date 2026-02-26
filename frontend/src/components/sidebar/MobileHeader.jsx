@@ -16,14 +16,12 @@ export default function MobileHeader({ onOpen }) {
             src="/assets/logo.svg"
             width="26"
             height="26"
-            alt="Astra Logo"
+            alt="logo"
             className="object-cover w-full h-full transition-transform duration-500 ease-out"
           />
         </div>
 
-        <span className="font-bold text-lg text-white tracking-wide">
-          Astra
-        </span>
+        <span className="font-bold text-lg text-white tracking-wide">HRMS</span>
       </div>
 
       <div className="flex items-center gap-4">
