@@ -19,7 +19,7 @@ exports.markAttendance = async (req, res) => {
     const attendanceDate = new Date(date);
     attendanceDate.setHours(0, 0, 0, 0);
 
-    // 🔥 Upsert (No duplicate issue)
+    //  Upsert (No duplicate issue)
     const attendance = await Attendance.findOneAndUpdate(
       { employee: employee._id, date: attendanceDate },
       { status },
