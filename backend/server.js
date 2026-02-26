@@ -1,10 +1,11 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 const connectDB = require("./config/database");
 const employeeRoutes = require("./routes/employeeRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
+
 const {
   notFound,
   globalErrorHandler,
@@ -14,6 +15,7 @@ const app = express();
 //! Establish connection to mongodb
 connectDB();
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
