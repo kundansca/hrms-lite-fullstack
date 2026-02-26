@@ -22,12 +22,19 @@ const employeeSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
     },
+    attendance: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attendance",
+      },
+    ],
     department: {
       type: String,
       required: true,
       trim: true,
     },
   },
+
   { timestamps: true },
 );
 

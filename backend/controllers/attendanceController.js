@@ -16,9 +16,28 @@ exports.markAttendance = async (req, res) => {
       return res.status(404).json({ message: "Employee not found" });
     }
 
+    // Normalize date (important)
+    const attendanceDate = new Date(date);
+    attendanceDate.setHours(0, 0, 0, 0);
+
+    // Check if already exists
+    const existing = await Attendance.findOne({
+      employee: employee._id,
+      date: attendanceDate,
+    });
+
+    if (existing) {
+      // Update instead of create
+      existing.status = status;
+      await existing.save();
+
+      return res.status(200).json(existing);
+    }
+
+    // Create new record
     const attendance = await Attendance.create({
       employee: employee._id,
-      date,
+      date: attendanceDate,
       status,
     });
 
@@ -28,7 +47,6 @@ exports.markAttendance = async (req, res) => {
   }
 };
 
-// Get Attendance By Employee
 exports.getAttendanceByEmployee = async (req, res) => {
   try {
     const employee = await Employee.findOne({
@@ -39,9 +57,42 @@ exports.getAttendanceByEmployee = async (req, res) => {
       return res.status(404).json({ message: "Employee not found" });
     }
 
-    const records = await Attendance.find({ employee: employee._id });
+    const records = await Attendance.find({
+      employee: employee._id,
+    })
+      .sort({ date: -1 }) // latest first
+      .populate("employee", "fullName employeeId department");
 
     res.status(200).json(records);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.getEmployeesWithTodayStatus = async (req, res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const employees = await Employee.find();
+
+    const attendance = await Attendance.find({ date: today });
+
+    const attendanceMap = {};
+    attendance.forEach((item) => {
+      attendanceMap[item.employee.toString()] = item.status;
+    });
+
+    const result = employees.map((emp) => ({
+      _id: emp._id,
+      employeeId: emp.employeeId,
+      fullName: emp.fullName,
+      email: emp.email,
+      department: emp.department,
+      status: attendanceMap[emp._id.toString()] || "Pending",
+    }));
+
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
