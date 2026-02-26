@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { THEME } from "./theme";
 import MobileHeader from "./MobileHeader";
 import SidebarHeader from "./SidebarHeader";
-import SidebarSearch from "./SidebarSearch";
 import SidebarMenu from "./SidebarMenu";
-import SidebarProfile from "./SidebarProfile";
 import { MENU_ITEMS } from "./menuItems";
 
 export default function Sidebar() {
@@ -63,7 +61,8 @@ export default function Sidebar() {
         animate={{
           width: isCollapsed ? "80px" : "288px",
         }}
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col h-full border-r border-gray-800 
+        className={`
+          fixed inset-y-0 left-0 z-50 flex flex-col h-full border-r border-gray-800 
           transition-transform duration-300 ease-in-out
           md:translate-x-0 md:relative md:h-screen
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
@@ -79,11 +78,6 @@ export default function Sidebar() {
           closeMobile={closeMobileMenu}
         />
 
-        <SidebarSearch
-          isCollapsed={isCollapsed}
-          setExpanded={() => setIsCollapsed(false)}
-        />
-
         <SidebarMenu
           isCollapsed={isCollapsed}
           isMobileOpen={isMobileOpen}
@@ -92,8 +86,6 @@ export default function Sidebar() {
           toggleSubmenu={toggleSubmenu}
           closeMobile={closeMobileMenu}
         />
-
-        <SidebarProfile isCollapsed={isCollapsed} />
       </motion.aside>
     </>
   );

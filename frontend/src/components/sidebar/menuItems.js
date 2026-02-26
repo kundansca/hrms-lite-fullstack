@@ -15,9 +15,9 @@ export const MENU_ITEMS = [
   {
     title: "Main",
     list: [
-      { name: "Dashboard", href: "#dashboard", icon: LayoutDashboard },
-      { name: "Payments", href: "#payments", icon: Receipt },
-      { name: "Analytics", href: "#analytics", icon: PieChart },
+      // { name: "Dashboard", href: "#dashboard", icon: LayoutDashboard },
+      // { name: "Payments", href: "#payments", icon: Receipt },
+      // { name: "Analytics", href: "#analytics", icon: PieChart },
       {
         name: "Employee",
         icon: Package,
@@ -28,24 +28,24 @@ export const MENU_ITEMS = [
           { name: "Categories", href: "#products-categories" },
         ],
       },
-      { name: "Reports", href: "#reports", icon: FileText },
-      { name: "Customers", href: "#customers", icon: Users },
+      // { name: "Reports", href: "#reports", icon: FileText },
+      // { name: "Customers", href: "#customers", icon: Users },
     ],
   },
-  {
-    title: "Settings",
-    list: [
-      { name: "Settings", href: "#settings", icon: Settings },
-      {
-        name: "Team",
-        icon: Shield,
-        items: [
-          { name: "Permissions", href: "#settings/permissions" },
-          { name: "Roles", href: "#settings/roles" },
-        ],
-      },
-      { name: "Billing", href: "#billing", icon: CreditCard },
-      { name: "Notifications", href: "#notifications", icon: Bell },
-    ],
-  },
+  // {
+  //   title: "Settings",
+  //   list: [
+  //     { name: "Settings", href: "#settings", icon: Settings },
+  //     {
+  //       name: "Team",
+  //       icon: Shield,
+  //       items: [
+  //         { name: "Permissions", href: "#settings/permissions" },
+  //         { name: "Roles", href: "#settings/roles" },
+  //       ],
+  //     },
+  //     { name: "Billing", href: "#billing", icon: CreditCard },
+  //     { name: "Notifications", href: "#notifications", icon: Bell },
+  //   ],
+  // },
 ];
