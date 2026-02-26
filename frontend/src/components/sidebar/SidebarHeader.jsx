@@ -20,7 +20,7 @@ export default function SidebarHeader({
             src="/assets/logo.svg"
             width={26}
             height={26}
-            alt="Astra Logo"
+            alt="Logo"
             className="object-cover w-full h-full transition-transform duration-500 ease-out"
           />
         </div>
@@ -33,7 +33,7 @@ export default function SidebarHeader({
               exit={{ opacity: 0, width: 0 }}
               className="font-bold text-xl whitespace-nowrap overflow-hidden"
             >
-              Astra
+              HRMS
             </motion.span>
           )}
         </AnimatePresence>

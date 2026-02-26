@@ -76,7 +76,7 @@ export default function EmployeeProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-[#021624] text-white py-10 px-4">
+    <div className="min-h-screen text-white py-10 px-4">
       <div className="max-w-5xl mx-auto flex flex-col gap-14">
         {/* ================= Employee Profile ================= */}
         <div className="flex flex-col items-center gap-8">
@@ -132,7 +132,7 @@ export default function EmployeeProfile() {
           </div>
 
           <div className="flex gap-6 justify-center text-sm mt-6">
-            <Legend color="bg-yellow-400" label="Present" text="text-black" />
+            <Legend color="bg-yellow-400" label="Present" />
             <Legend color="bg-red-600/50" label="Absent" />
             <Legend color="bg-[#305570]/30" label="Not Marked" />
           </div>

@@ -99,16 +99,17 @@ export default function EmployeeTable() {
   }
 
   return (
-    <div className="w-full overflow-x-auto bg-[#021624] min-h-screen p-4 mt-8 sm:mt-0">
-      <div className="bg-[#0E2A38] rounded-xl px-2">
-        <h1 className="text-white text-center mt-5 mb-3">All Employee</h1>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-white min-w-[700px]">
-            <thead className="border-b border-white/20 bg-[#305570]">
-              <tr className="text-sm font-light">
+    <>
+      <h1 className="text-white text-center mb-3 text-2xl">All Employee</h1>
+      <div className="w-full overflow-x-auto min-h-screen p-4">
+        <div className=" rounded-xl px-2">
+          <table className="w-full text-left text-white [&_th]:px-4 [&_td]:px-4 overflow-auto bg-[#0E2A38]">
+            <thead className="border-b border-white/20 bg-[#305570] ">
+              <tr className="text-sm font-light px-1">
                 <th className="py-3">ID</th>
                 <th>Name</th>
                 <th>Department</th>
+                <th>Phone</th>
                 <th>Email</th>
                 <th>Status</th>
                 <th></th>
@@ -122,6 +123,7 @@ export default function EmployeeTable() {
                   <td className="py-4">{emp.employeeId}</td>
                   <td>{emp.fullName}</td>
                   <td>{emp.department}</td>
+                  <td>{emp.phoneNumber}</td>
                   <td>{emp.email}</td>
 
                   {/* STATUS DROPDOWN */}
@@ -178,14 +180,14 @@ export default function EmployeeTable() {
               ))}
             </tbody>
           </table>
-        </div>
 
-        {employees.length === 0 && (
-          <div className="text-center py-6 text-gray-400">
-            No employees found
-          </div>
-        )}
+          {employees.length === 0 && (
+            <div className="text-center py-6 text-gray-400">
+              No employees found
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
