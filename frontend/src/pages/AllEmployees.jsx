@@ -111,7 +111,7 @@ export default function EmployeeTable() {
                 <th>Department</th>
                 <th>Phone</th>
                 <th>Email</th>
-                <th>Status</th>
+                <th>Attendance Status</th>
                 <th></th>
               </tr>
             </thead>
