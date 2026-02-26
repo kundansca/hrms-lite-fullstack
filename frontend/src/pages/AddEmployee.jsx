@@ -3,7 +3,7 @@ import axios from "axios";
 const AddEmployeeForm = () => {
   const [formData, setFormData] = useState({
     fullName: "",
-    phone: "",
+    phoneNumber: "",
     email: "",
     employeeId: "",
     department: "",
@@ -25,10 +25,10 @@ const AddEmployeeForm = () => {
 
     if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
 
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (!/^[0-9]{10}$/.test(formData.phone)) {
-      newErrors.phone = "Enter valid 10 digit number";
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Phone number is required";
+    } else if (!/^[0-9]{10}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Enter valid 10 digit number";
     }
 
     if (!formData.email.trim()) {
@@ -64,7 +64,7 @@ const AddEmployeeForm = () => {
         `${import.meta.env.VITE_BASE_URL}/api/employees`,
         {
           ...formData,
-          phone: "+91" + formData.phone,
+          phoneNumber: "+91" + formData.phoneNumber,
         },
       );
 
@@ -72,7 +72,7 @@ const AddEmployeeForm = () => {
         setSuccess("Employee added successfully ✅");
         setFormData({
           fullName: "",
-          phone: "",
+          phoneNumber: "",
           email: "",
           employeeId: "",
           department: "",
@@ -129,15 +129,15 @@ const AddEmployeeForm = () => {
             </div>
             <input
               type="text"
-              name="phone"
-              value={formData.phone}
+              name="phoneNumber"
+              value={formData.phoneNumber}
               onChange={handleChange}
               placeholder="Enter details"
               className="h-9 bg-[#021624] rounded-lg px-3 text-white text-sm placeholder:text-[#305570]"
             />
           </div>
-          {errors.phone && (
-            <p className="text-red-400 text-xs">{errors.phone}</p>
+          {errors.phoneNumber && (
+            <p className="text-red-400 text-xs">{errors.phoneNumber}</p>
           )}
         </div>
 

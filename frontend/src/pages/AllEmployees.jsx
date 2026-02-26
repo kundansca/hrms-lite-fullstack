@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function EmployeeTable() {
   const [employees, setEmployees] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
   //  Fetch Employees with Today Status
   useEffect(() => {
@@ -28,6 +30,12 @@ export default function EmployeeTable() {
     if (status === "Present") return "text-green-400";
     if (status === "Absent") return "text-red-400";
     return "text-yellow-400";
+  };
+  const handleViewMore = (employeeId) => {
+    const today = new Date();
+    const currentMonth = today.toISOString().slice(0, 7);
+
+    navigate(`/employees/${employeeId}?month=${currentMonth}`);
   };
 
   const handleStatusChange = async (emp, newStatus) => {
@@ -152,7 +160,7 @@ export default function EmployeeTable() {
                       <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded shadow-lg z-10">
                         <button
                           className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                          onClick={() => alert(`Viewing ${emp.fullName}`)}
+                          onClick={() => handleViewMore(emp.employeeId)}
                         >
                           View More
                         </button>

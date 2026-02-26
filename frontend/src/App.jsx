@@ -3,6 +3,7 @@ import "./App.css";
 import Layout from "./components/layout/Layout";
 import AddEmployee from "./pages/AddEmployee";
 import AllEmployees from "./pages/AllEmployees";
+import EmployeeProfile from "./pages/EmployeeProfile";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/employees" element={<AllEmployees />} />
           <Route path="/add-employee" element={<AddEmployee />} />
+          <Route path="/employees/:id" element={<EmployeeProfile />} />
         </Route>
       </Routes>
     </>

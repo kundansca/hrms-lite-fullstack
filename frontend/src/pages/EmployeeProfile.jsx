@@ -1,92 +1,141 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export default function EmployeeProfile() {
-  const [activeMonth, setActiveMonth] = useState("February 2026");
+  const { id } = useParams();
+  const baseUrl = import.meta.env.VITE_BASE_URL;
 
-  const months = ["January 2026", "February 2026", "March 2026"];
+  const today = new Date();
+  const defaultMonth = `${today.getFullYear()}-${String(
+    today.getMonth() + 1,
+  ).padStart(2, "0")}`;
 
-  const dates = Array.from({ length: 28 }, (_, i) => i + 1);
+  const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
+  const [dates, setDates] = useState([]);
+  const [attendanceMap, setAttendanceMap] = useState({});
+  const [employee, setEmployee] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const presentDates = [19]; // yellow
-  const absentDates = [3, 6, 10, 11, 16]; // red
+  //Calculate Days + Fetch Attendance
+  useEffect(() => {
+    const [year, month] = selectedMonth.split("-");
+    const totalDays = new Date(year, month, 0).getDate();
+
+    const daysArray = Array.from({ length: totalDays }, (_, i) => i + 1);
+    setDates(daysArray);
+
+    fetchAttendance(selectedMonth);
+  }, [selectedMonth]);
+
+  // API Call
+  const fetchAttendance = async (month) => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get(
+        `${baseUrl}/api/attendance/${id}?month=${month}`,
+      );
+
+      const map = {};
+      let empData = null;
+
+      res.data.forEach((item) => {
+        const dateNumber = new Date(item.date).getDate();
+        map[dateNumber] = item.status;
+
+        if (!empData && item.employee) {
+          empData = item.employee;
+        }
+      });
+
+      setAttendanceMap(map);
+      setEmployee(empData);
+    } catch (error) {
+      console.error("Attendance fetch error", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getDateStyle = (date) => {
-    if (presentDates.includes(date)) return "bg-yellow-400 text-black";
-    if (absentDates.includes(date)) return "bg-red-700/40 text-white";
+    const status = attendanceMap[date];
+
+    if (status === "Present") return "bg-yellow-400 text-black";
+    if (status === "Absent") return "bg-red-600/50 text-white";
+
     return "bg-[#305570]/30 text-white";
   };
 
-  return (
-    <div className="absolute left-[29px] top-[102px] w-[1223px] flex flex-col items-center gap-12 text-white">
-      {/* Header */}
-      <div className="w-full flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-white rounded-full"></div>
-          <h1 className="text-2xl font-bold">Astra</h1>
-        </div>
-        <div className="w-6 h-6 bg-white rounded-sm"></div>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#021624] text-white">
+        Loading...
       </div>
+    );
+  }
 
-      {/* Employee Profile */}
-      <div className="flex flex-col items-center gap-8 w-[705px]">
-        <h2 className="text-lg text-white/20">Employee Profile</h2>
+  return (
+    <div className="min-h-screen bg-[#021624] text-white py-10 px-4">
+      <div className="max-w-5xl mx-auto flex flex-col gap-14">
+        {/* ================= Employee Profile ================= */}
+        <div className="flex flex-col items-center gap-8">
+          <h2 className="text-lg text-white/20">Employee Profile</h2>
 
-        <div className="flex gap-9">
-          {/* Image */}
-          <div className="w-[89px] h-[89px] bg-white rounded-full overflow-hidden">
-            <img
-              src="https://randomuser.me/api/portraits/men/32.jpg"
-              alt="employee"
-              className="w-full h-full object-cover"
+          <div className="flex flex-col md:flex-row items-center gap-10">
+            <div className="w-24 h-24 bg-white rounded-full overflow-hidden">
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="employee"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              <InfoRow
+                label="Employee ID"
+                value={employee?.employeeId || "-"}
+              />
+              <InfoRow label="Name" value={employee?.fullName || "-"} />
+
+              <InfoRow label="E-mail ID" value={employee?.email || "-"} />
+              <InfoRow label="Phone" value={employee?.phoneNumber || "-"} />
+              <InfoRow label="Department" value={employee?.department || "-"} />
+            </div>
+          </div>
+        </div>
+
+        {/* ================= Attendance Section ================= */}
+        <div className="flex flex-col gap-8">
+          <h2 className="text-lg text-white/20 text-center">Attendance</h2>
+
+          <div className="flex justify-end">
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="bg-[#305570]/30 px-4 py-2 rounded-md text-white outline-none"
             />
           </div>
 
-          {/* Info Left */}
-          <div className="flex flex-col gap-4 text-sm">
-            <InfoRow label="Name" value="Ronald Richards" />
-            <InfoRow label="Phone Number" value="+91 9876543210" />
-            <InfoRow label="E-mail ID" value="ronald@email.com" />
+          <div className="grid grid-cols-7 gap-5 justify-items-center">
+            {dates.map((date) => (
+              <div
+                key={date}
+                className={`w-12 h-12 flex items-center justify-center rounded-full text-sm font-light transition-all duration-200 hover:scale-110 ${getDateStyle(
+                  date,
+                )}`}
+              >
+                {date}
+              </div>
+            ))}
           </div>
 
-          {/* Info Right */}
-          <div className="flex flex-col gap-4 text-sm">
-            <InfoRow label="Address" value="New York, USA" />
-            <InfoRow label="Department" value="Development" />
+          <div className="flex gap-6 justify-center text-sm mt-6">
+            <Legend color="bg-yellow-400" label="Present" text="text-black" />
+            <Legend color="bg-red-600/50" label="Absent" />
+            <Legend color="bg-[#305570]/30" label="Not Marked" />
           </div>
-        </div>
-      </div>
-
-      {/* Attendance Section */}
-      <div className="flex flex-col items-center gap-6 w-[666px]">
-        <h2 className="text-lg text-white/20">Attendance</h2>
-
-        {/* Month Tabs */}
-        <div className="flex justify-between w-full">
-          {months.map((month) => (
-            <button
-              key={month}
-              onClick={() => setActiveMonth(month)}
-              className={`text-lg ${
-                activeMonth === month ? "text-white" : "text-white/30"
-              }`}
-            >
-              {month}
-            </button>
-          ))}
-        </div>
-
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-6 w-full">
-          {dates.map((date) => (
-            <div
-              key={date}
-              className={`w-12 h-12 flex items-center justify-center rounded-full text-sm font-light ${getDateStyle(
-                date,
-              )}`}
-            >
-              {date}
-            </div>
-          ))}
         </div>
       </div>
     </div>
@@ -96,8 +145,17 @@ export default function EmployeeProfile() {
 function InfoRow({ label, value }) {
   return (
     <div className="flex gap-6">
-      <span className="w-28 font-light">{label}</span>
+      <span className="w-32 font-light text-white/60">{label}</span>
       <span className="font-light">{value}</span>
+    </div>
+  );
+}
+
+function Legend({ color, label, text = "text-white" }) {
+  return (
+    <div className="flex items-center gap-2">
+      <div className={`w-4 h-4 rounded-full ${color}`}></div>
+      <span className={text}>{label}</span>
     </div>
   );
 }
