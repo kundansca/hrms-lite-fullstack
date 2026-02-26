@@ -1,28 +1,15 @@
-import {
-  LayoutDashboard,
-  Receipt,
-  PieChart,
-  Package,
-  FileText,
-  Users,
-  Settings,
-  CreditCard,
-  Bell,
-  Shield,
-} from "lucide-react";
+import { Package } from "lucide-react";
 
 export const MENU_ITEMS = [
   {
     title: "Main",
     list: [
-      // { name: "Dashboard", href: "#dashboard", icon: LayoutDashboard },
-      // { name: "Payments", href: "#payments", icon: Receipt },
-      // { name: "Analytics", href: "#analytics", icon: PieChart },
       {
         name: "Employee",
         icon: Package,
         href: "#Employee",
         items: [
+          { name: "All Employees", href: "/employees" },
           { name: "Add Employee", href: "/add-employee" },
           { name: "Inventory", href: "#products-inventory" },
           { name: "Categories", href: "#products-categories" },
